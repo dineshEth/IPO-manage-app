@@ -123,15 +123,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-// Add spinner-sm class for smaller spinner
-const styles = `
-  <style>
-    .spinner-sm {
-      width: 16px;
-      height: 16px;
-      border-width: 2px;
-      display: inline-block;
-    }
-  </style>
-`;
