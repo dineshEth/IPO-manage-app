@@ -12,10 +12,11 @@ model User {
   username  String    @unique
   password  String
   name      String?
-  role      Role      @default(USER)
+  role      String    @default("USER")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   ipoEntries IPOEntry[]
+  createdIPOs IPO[]
 }
 
 model IPO {
@@ -28,7 +29,7 @@ model IPO {
   price        Float
   lotSize      Int
   costInRupees Float
-  status       IPOStatus @default(PENDING)
+  status       String    @default("PENDING")
   listingDate  DateTime?
   allotmentDate DateTime?
   createdAt    DateTime  @default(now())
@@ -39,41 +40,21 @@ model IPO {
 }
 
 model IPOEntry {
-  id           String       @id @default(cuid())
-  ipo          IPO          @relation(fields: [ipoId], references: [id])
+  id           String   @id @default(cuid())
+  ipo          IPO      @relation(fields: [ipoId], references: [id])
   ipoId        String
-  user         User         @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
   userId       String
   upiId        String
-  appliedDate  DateTime     @default(now())
-  status       EntryStatus  @default(PENDING)
-  allotmentStatus AllotmentStatus?
+  appliedDate  DateTime @default(now())
+  status       String   @default("PENDING")
+  allotmentStatus String?
   requestedDeletion Boolean @default(false)
   deletionApproved Boolean @default(false)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@unique([ipoId, userId])
 }
 
-enum Role {
-  SUPER_ADMIN
-  USER
-}
 
-enum IPOStatus {
-  PENDING
-  ACTIVE
-  CLOSED
-}
-
-enum EntryStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
-enum AllotmentStatus {
-  ALLOTED
-  NOT_ALLOTED
-}
