@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 import Link from 'next/link';
 
 interface User {
@@ -24,7 +24,7 @@ export default function UserDetailPage() {
   const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    role: Role.USER,
+    role: 'USER',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,8 +73,8 @@ export default function UserDetailPage() {
     }
   }, [id, currentUser]);
 
-  const canEdit = currentUser?.role === Role.SUPER_ADMIN || currentUser?.id === id;
-  const canEditRole = currentUser?.role === Role.SUPER_ADMIN;
+  const canEdit = currentUser?.role === 'SUPER_ADMIN' || currentUser?.id === id;
+  const canEditRole = currentUser?.role === 'SUPER_ADMIN';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -300,16 +300,16 @@ export default function UserDetailPage() {
                   onChange={handleChange}
                   className="form-input"
                 >
-                  <option value={Role.USER}>Regular User</option>
-                  <option value={Role.SUPER_ADMIN}>Super Admin</option>
+                  <option value={'USER'}>Regular User</option>
+                  <option value={'SUPER_ADMIN'}>Super Admin</option>
                 </select>
               ) : (
                 <span
                   className={`badge ${
-                    user.role === Role.SUPER_ADMIN ? 'badge-active' : 'badge-pending'
+                    user.role === 'SUPER_ADMIN' ? 'badge-active' : 'badge-pending'
                   }`}
                 >
-                  {user.role === Role.SUPER_ADMIN ? 'Super Admin' : 'User'}
+                  {user.role === 'SUPER_ADMIN' ? 'Super Admin' : 'User'}
                 </span>
               )}
             </div>
@@ -435,7 +435,7 @@ export default function UserDetailPage() {
           Actions
         </h2>
         <div className="flex flex-wrap gap-4">
-          <Link href={currentUser?.role === Role.SUPER_ADMIN ? '/dashboard/users' : '/dashboard'} className="btn btn-secondary">
+          <Link href={currentUser?.role === 'SUPER_ADMIN' ? '/dashboard/users' : '/dashboard'} className="btn btn-secondary">
             Back
           </Link>
           {canEdit && !isEditing && (

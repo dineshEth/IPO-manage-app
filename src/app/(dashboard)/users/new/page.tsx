@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 import Link from 'next/link';
 
 export default function NewUserPage() {
@@ -13,14 +13,14 @@ export default function NewUserPage() {
     username: '',
     password: '',
     name: '',
-    role: Role.USER,
+    role: 'USER',
   });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user?.role !== Role.SUPER_ADMIN) {
+    if (user?.role !== 'SUPER_ADMIN') {
       router.push('/dashboard');
     }
   }, [user, router]);
@@ -57,7 +57,7 @@ export default function NewUserPage() {
           username: '',
           password: '',
           name: '',
-          role: Role.USER,
+          role: 'USER',
         });
         setTimeout(() => {
           router.push('/dashboard/users');
@@ -71,7 +71,7 @@ export default function NewUserPage() {
     }
   };
 
-  if (user?.role !== Role.SUPER_ADMIN) {
+  if (user?.role !== 'SUPER_ADMIN') {
     return null;
   }
 
@@ -177,8 +177,8 @@ export default function NewUserPage() {
               className="form-input"
               required
             >
-              <option value={Role.USER}>Regular User</option>
-              <option value={Role.SUPER_ADMIN}>Super Admin</option>
+              <option value={'USER'}>Regular User</option>
+              <option value={'SUPER_ADMIN'}>Super Admin</option>
             </select>
             <p className="text-sm text-gray-500 mt-1">
               Super Admin has full access, Regular User has limited access

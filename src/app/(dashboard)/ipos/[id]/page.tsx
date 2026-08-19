@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 import Link from 'next/link';
 
 interface IPO {
@@ -53,7 +53,7 @@ export default function IPODetailPage() {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    if (user?.role !== Role.SUPER_ADMIN) {
+    if (user?.role !== 'SUPER_ADMIN') {
       router.push('/dashboard');
     }
   }, [user, router]);
@@ -116,10 +116,10 @@ export default function IPODetailPage() {
         symbol: ipo.symbol,
         startDate: new Date(ipo.startDate).toISOString().split('T')[0],
         endDate: new Date(ipo.endDate).toISOString().split('T')[0],
-        rumorGMP: ipo.rumorGMP || '',
-        price: ipo.price,
-        lotSize: ipo.lotSize,
-        costInRupees: ipo.costInRupees,
+        rumorGMP: ipo.rumorGMP?.toString() || '',
+        price: ipo.price?.toString() || '',
+        lotSize: ipo.lotSize?.toString() || '',
+        costInRupees: ipo.costInRupees?.toString() || '',
         status: ipo.status,
         listingDate: ipo.listingDate ? new Date(ipo.listingDate).toISOString().split('T')[0] : '',
         allotmentDate: ipo.allotmentDate ? new Date(ipo.allotmentDate).toISOString().split('T')[0] : '',
@@ -181,7 +181,7 @@ export default function IPODetailPage() {
     }
   };
 
-  if (user?.role !== Role.SUPER_ADMIN) {
+  if (user?.role !== 'SUPER_ADMIN') {
     return null;
   }
 
@@ -402,7 +402,7 @@ export default function IPODetailPage() {
                 />
               ) : (
                 <p className="text-gray-900">
-                  {ipo.rumorGMP !== null ? ₹{ipo.rumorGMP} : '-_shy'}
+                  {ipo.rumorGMP !== null ? `₹${ipo.rumorGMP}` : '-'}
                 </p>
               )}
             </div>

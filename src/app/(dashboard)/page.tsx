@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface IPO {
   id: string;
@@ -18,6 +18,7 @@ interface Entry {
   id: string;
   status: string;
   allotmentStatus: string | null;
+  createdAt: string;
   ipo: {
     name: string;
   };
@@ -65,7 +66,7 @@ export default function DashboardPage() {
     const acceptedEntries = entries.filter((e) => e.status === 'ACCEPTED').length;
     const allotedEntries = entries.filter((e) => e.allotmentStatus === 'ALLOTED').length;
 
-    if (user?.role === Role.SUPER_ADMIN) {
+    if (user?.role === 'SUPER_ADMIN') {
       return [
         { label: 'Total IPOs', value: totalIPOs, color: 'bg-primary-500' },
         { label: 'Active IPOs', value: activeIPOs, color: 'bg-green-500' },
@@ -116,7 +117,7 @@ export default function DashboardPage() {
           Welcome back, {user?.name || user?.username}!
         </h1>
         <p className="text-gray-600 mt-2">
-          {user?.role === Role.SUPER_ADMIN
+          {user?.role === 'SUPER_ADMIN'
             ? 'Manage IPOs, users, and entries from your dashboard.'
             : 'View IPOs and manage your entries.'}
         </p>
@@ -136,7 +137,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick actions */}
-      {user?.role === Role.SUPER_ADMIN && (
+      {user?.role === 'SUPER_ADMIN' && (
         <div className="card p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Quick Actions
@@ -172,7 +173,7 @@ export default function DashboardPage() {
               <div className="empty-state-icon">📈</div>
               <p className="empty-state-text">No IPOs found</p>
               <p className="text-gray-500 text-sm">
-                {user?.role === Role.SUPER_ADMIN
+                {user?.role === 'SUPER_ADMIN'
                   ? 'Add your first IPO to get started'
                   : 'No IPOs available at the moment'}
               </p>
@@ -213,10 +214,10 @@ export default function DashboardPage() {
         <div className="card p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900">
-              {user?.role === Role.SUPER_ADMIN ? 'Recent Entries' : 'My Entries'}
+              {user?.role === 'SUPER_ADMIN' ? 'Recent Entries' : 'My Entries'}
             </h2>
             <Link
-              href={user?.role === Role.SUPER_ADMIN ? '/dashboard/entries/all' : '/dashboard/entries'}
+              href={user?.role === 'SUPER_ADMIN' ? '/dashboard/entries/all' : '/dashboard/entries'}
               className="text-primary-600 hover:text-primary-700 text-sm"
             >
               View all
@@ -227,9 +228,9 @@ export default function DashboardPage() {
             <div className="empty-state">
               <div className="empty-state-icon">📝</div>
               <p className="empty-state-text">
-                {user?.role === Role.SUPER_ADMIN ? 'No entries found' : 'No entries yet'}
+                {user?.role === 'SUPER_ADMIN' ? 'No entries found' : 'No entries yet'}
               </p>
-              {user?.role !== Role.SUPER_ADMIN && (
+              {user?.role !== 'SUPER_ADMIN' && (
                 <p className="text-gray-500 text-sm">
                   Apply for an IPO to see your entries here
                 </p>

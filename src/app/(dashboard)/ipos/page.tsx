@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface IPO {
   id: string;
@@ -110,7 +110,7 @@ export default function IPOsPage() {
             View and manage all Initial Public Offerings
           </p>
         </div>
-        {user?.role === Role.SUPER_ADMIN && (
+        {user?.role === 'SUPER_ADMIN' && (
           <Link href="/dashboard/ipos/new" className="btn btn-primary">
             Add New IPO
           </Link>
@@ -175,11 +175,11 @@ export default function IPOsPage() {
               <div className="empty-state-icon">📈</div>
               <p className="empty-state-text">No IPOs found</p>
               <p className="text-gray-500 text-sm">
-                {user?.role === Role.SUPER_ADMIN
+                {user?.role === 'SUPER_ADMIN'
                   ? 'Add your first IPO to get started'
                   : 'No IPOs available at the moment'}
               </p>
-              {user?.role === Role.SUPER_ADMIN && (
+              {user?.role === 'SUPER_ADMIN' && (
                 <Link href="/dashboard/ipos/new" className="btn btn-primary mt-4">
                   Add New IPO
                 </Link>
@@ -196,7 +196,7 @@ export default function IPOsPage() {
                   <th>Dates</th>
                   <th>Status</th>
                   <th>GMP</th>
-                  {user?.role === Role.SUPER_ADMIN && <th>Actions</th>}
+                  {user?.role === 'SUPER_ADMIN' && <th>Actions</th>}
                 </tr>
               </thead>
               <tbody>
@@ -240,7 +240,7 @@ export default function IPOsPage() {
                         <span className="text-gray-400">-</span>
                       )}
                     </td>
-                    {user?.role === Role.SUPER_ADMIN && (
+                    {user?.role === 'SUPER_ADMIN' && (
                       <td className="space-x-2">
                         <Link
                           href={`/dashboard/ipos/${ipo.id}`}

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
 import { getUserFromToken } from '@/lib/auth';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 // GET all IPOs
 export async function GET() {
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can create IPOs' },
         { status: 403 }

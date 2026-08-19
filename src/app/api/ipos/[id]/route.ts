@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
 import { getUserFromToken } from '@/lib/auth';
-import { Role, IPOStatus } from '@prisma/client';
+import { Role, IPOStatus } from '@/types/prisma';
 
 // GET single IPO
 export async function GET(
@@ -77,7 +77,7 @@ export async function PUT(
       );
     }
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can update IPOs' },
         { status: 403 }
@@ -163,7 +163,7 @@ export async function DELETE(
       );
     }
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can delete IPOs' },
         { status: 403 }

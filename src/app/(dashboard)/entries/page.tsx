@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface Entry {
   id: string;

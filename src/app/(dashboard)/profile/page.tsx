@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface User {
   id: string;
@@ -261,10 +261,10 @@ export default function ProfilePage() {
             <p className="text-gray-600">@{user.username}</p>
             <span
               className={`badge mt-2 ${
-                user.role === Role.SUPER_ADMIN ? 'badge-active' : 'badge-pending'
+                user.role === 'SUPER_ADMIN' ? 'badge-active' : 'badge-pending'
               }`}
             >
-              {user.role === Role.SUPER_ADMIN ? 'Super Admin' : 'User'}
+              {user.role === 'SUPER_ADMIN' ? 'Super Admin' : 'User'}
             </span>
           </div>
         </div>
@@ -311,10 +311,10 @@ export default function ProfilePage() {
               <label className="form-label">Role</label>
               <span
                 className={`badge ${
-                  user.role === Role.SUPER_ADMIN ? 'badge-active' : 'badge-pending'
+                  user.role === 'SUPER_ADMIN' ? 'badge-active' : 'badge-pending'
                 }`}
               >
-                {user.role === Role.SUPER_ADMIN ? 'Super Admin' : 'User'}
+                {user.role === 'SUPER_ADMIN' ? 'Super Admin' : 'User'}
               </span>
             </div>
             <div>
@@ -459,7 +459,7 @@ export default function ProfilePage() {
           <Link href="/dashboard" className="btn btn-secondary">
             Back to Dashboard
           </Link>
-          {user.role === Role.SUPER_ADMIN && (
+          {user.role === 'SUPER_ADMIN' && (
             <Link href="/dashboard/users" className="btn btn-secondary">
               Manage Users
             </Link>

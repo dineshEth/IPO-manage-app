@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserPayload } from '@/lib/auth';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface SidebarProps {
   user: UserPayload | null;
@@ -16,43 +16,43 @@ const menuItems = [
     name: 'Dashboard',
     path: '/dashboard',
     icon: '🏠',
-    roles: [Role.SUPER_ADMIN, Role.USER],
+    roles: ['SUPER_ADMIN', 'USER'],
   },
   {
     name: 'All IPOs',
     path: '/dashboard/ipos',
     icon: '📈',
-    roles: [Role.SUPER_ADMIN, Role.USER],
+    roles: ['SUPER_ADMIN', 'USER'],
   },
   {
     name: 'My Entries',
     path: '/dashboard/entries',
     icon: '📝',
-    roles: [Role.SUPER_ADMIN, Role.USER],
+    roles: ['SUPER_ADMIN', 'USER'],
   },
   {
     name: 'All Entries',
     path: '/dashboard/entries/all',
     icon: '📋',
-    roles: [Role.SUPER_ADMIN],
+    roles: ['SUPER_ADMIN'],
   },
   {
     name: 'Add IPO',
     path: '/dashboard/ipos/new',
     icon: '➕',
-    roles: [Role.SUPER_ADMIN],
+    roles: ['SUPER_ADMIN'],
   },
   {
     name: 'Users',
     path: '/dashboard/users',
     icon: '👥',
-    roles: [Role.SUPER_ADMIN],
+    roles: ['SUPER_ADMIN'],
   },
   {
     name: 'Add User',
     path: '/dashboard/users/new',
     icon: '👤',
-    roles: [Role.SUPER_ADMIN],
+    roles: ['SUPER_ADMIN'],
   },
 ];
 
@@ -81,7 +81,7 @@ export default function Sidebar({ user, onClose }: SidebarProps) {
           <div>
             <p className="text-white font-semibold">{user?.name || user?.username}</p>
             <p className="text-white/70 text-xs">
-              {user?.role === Role.SUPER_ADMIN ? 'Super Admin' : 'User'}
+              {user?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'User'}
             </p>
           </div>
         </div>

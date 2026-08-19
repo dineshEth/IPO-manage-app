@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
 import { getUserFromToken } from '@/lib/auth';
-import { Role, EntryStatus, AllotmentStatus } from '@prisma/client';
+import { Role, EntryStatus, AllotmentStatus } from '@/types/prisma';
 
 // GET single entry
 export async function GET(
@@ -52,7 +52,7 @@ export async function GET(
     }
 
     // Check if user has permission to view this entry
-    if (user.role !== Role.SUPER_ADMIN && entry.userId !== user.id) {
+    if (user.role !== 'SUPER_ADMIN' && entry.userId !== user.id) {
       return NextResponse.json(
         { error: 'Forbidden - You can only view your own entries' },
         { status: 403 }
@@ -107,7 +107,7 @@ export async function PUT(
     }
 
     // Check permissions
-    if (user.role !== Role.SUPER_ADMIN && entry.userId !== user.id) {
+    if (user.role !== 'SUPER_ADMIN' && entry.userId !== user.id) {
       return NextResponse.json(
         { error: 'Forbidden - You can only update your own entries' },
         { status: 403 }
@@ -115,7 +115,7 @@ export async function PUT(
     }
 
     // Regular users can only request deletion
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       if (requestedDeletion !== undefined) {
         const updatedEntry = await prisma.iPOEntry.update({
           where: { id },
@@ -200,7 +200,7 @@ export async function DELETE(
     }
 
     // Check permissions
-    if (user.role !== Role.SUPER_ADMIN && entry.userId !== user.id) {
+    if (user.role !== 'SUPER_ADMIN' && entry.userId !== user.id) {
       return NextResponse.json(
         { error: 'Forbidden - You can only delete your own entries' },
         { status: 403 }
@@ -208,7 +208,7 @@ export async function DELETE(
     }
 
     // If regular user, just mark as requested for deletion
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       const updatedEntry = await prisma.iPOEntry.update({
         where: { id },
         data: { requestedDeletion: true },

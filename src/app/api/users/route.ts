@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
 import { getUserFromToken, hashPassword } from '@/lib/auth';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 // GET all users (Super Admin only)
 export async function GET() {
@@ -25,7 +25,7 @@ export async function GET() {
       );
     }
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can view all users' },
         { status: 403 }
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can create users' },
         { status: 403 }
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         username,
         password: hashedPassword,
         name: name || null,
-        role: role || Role.USER,
+        role: role || 'USER',
       },
       select: {
         id: true,

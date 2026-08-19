@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
 import { getUserFromToken } from '@/lib/auth';
-import { Role, EntryStatus } from '@prisma/client';
+import { Role, EntryStatus } from '@/types/prisma';
 
 // GET all entries for the current user (or all if super admin)
 export async function GET(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     let entries;
 
-    if (user.role === Role.SUPER_ADMIN) {
+    if (user.role === 'SUPER_ADMIN') {
       // Super admin can see all entries
       entries = await prisma.iPOEntry.findMany({
         orderBy: { createdAt: 'desc' },
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine who the entry is for
-    const targetUserId = user.role === Role.SUPER_ADMIN && userId ? userId : user.id;
+    const targetUserId = user.role === 'SUPER_ADMIN' && userId ? userId : user.id;
 
     // Check if entry already exists for this user and IPO
     const existingEntry = await prisma.iPOEntry.findUnique({
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
         ipoId,
         userId: targetUserId,
         upiId,
-        status: EntryStatus.PENDING,
+        status: 'PENDING',
       },
     });
 

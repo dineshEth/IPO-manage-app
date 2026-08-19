@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { UserPayload } from '@/lib/auth';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface NavbarProps {
   user: UserPayload | null;
@@ -54,7 +54,7 @@ export default function Navbar({ user, onMenuClick, onLogout }: NavbarProps) {
                   {user?.name || user?.username}
                 </p>
                 <p className="text-xs text-gray-500 capitalize">
-                  {user?.role === Role.SUPER_ADMIN ? 'Super Admin' : 'User'}
+                  {user?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'User'}
                 </p>
               </div>
               

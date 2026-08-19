@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 import Link from 'next/link';
 
 interface Entry {
@@ -34,7 +34,7 @@ export default function AllEntriesPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    if (user?.role !== Role.SUPER_ADMIN) {
+    if (user?.role !== 'SUPER_ADMIN') {
       // Regular users should not access this page
       window.location.href = '/dashboard/entries';
     }
@@ -62,7 +62,7 @@ export default function AllEntriesPage() {
       }
     };
 
-    if (user?.role === Role.SUPER_ADMIN) {
+    if (user?.role === 'SUPER_ADMIN') {
       fetchEntries();
     }
   }, [user]);
@@ -163,7 +163,7 @@ export default function AllEntriesPage() {
     return matchesSearch && matchesStatus;
   });
 
-  if (user?.role !== Role.SUPER_ADMIN) {
+  if (user?.role !== 'SUPER_ADMIN') {
     return null;
   }
 

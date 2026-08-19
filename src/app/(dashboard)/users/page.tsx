@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 interface User {
   id: string;
@@ -23,7 +23,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>('');
 
   useEffect(() => {
-    if (user?.role !== Role.SUPER_ADMIN) {
+    if (user?.role !== 'SUPER_ADMIN') {
       // Regular users should not access this page
       window.location.href = '/dashboard';
     }
@@ -51,7 +51,7 @@ export default function UsersPage() {
       }
     };
 
-    if (user?.role === Role.SUPER_ADMIN) {
+    if (user?.role === 'SUPER_ADMIN') {
       fetchUsers();
     }
   }, [user]);
@@ -90,7 +90,7 @@ export default function UsersPage() {
     return matchesSearch && matchesRole;
   });
 
-  if (user?.role !== Role.SUPER_ADMIN) {
+  if (user?.role !== 'SUPER_ADMIN') {
     return null;
   }
 
@@ -200,10 +200,10 @@ export default function UsersPage() {
                     <td>
                       <span
                         className={`badge ${
-                          u.role === Role.SUPER_ADMIN ? 'badge-active' : 'badge-pending'
+                          u.role === 'SUPER_ADMIN' ? 'badge-active' : 'badge-pending'
                         }`}
                       >
-                        {u.role === Role.SUPER_ADMIN ? 'Super Admin' : 'User'}
+                        {u.role === 'SUPER_ADMIN' ? 'Super Admin' : 'User'}
                       </span>
                     </td>
                     <td>{new Date(u.createdAt).toLocaleDateString()}</td>
@@ -244,13 +244,13 @@ export default function UsersPage() {
           </div>
           <div className="stats-card">
             <div className="stats-value">
-              {users.filter((u) => u.role === Role.SUPER_ADMIN).length}
+              {users.filter((u) => u.role === 'SUPER_ADMIN').length}
             </div>
             <div className="stats-label">Super Admins</div>
           </div>
           <div className="stats-card">
             <div className="stats-value">
-              {users.filter((u) => u.role === Role.USER).length}
+              {users.filter((u) => u.role === 'USER').length}
             </div>
             <div className="stats-label">Regular Users</div>
           </div>

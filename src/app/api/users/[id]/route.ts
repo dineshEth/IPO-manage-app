@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
 import { getUserFromToken, hashPassword } from '@/lib/auth';
-import { Role } from '@prisma/client';
+import { Role } from '@/types/prisma';
 
 // GET single user (Super Admin only or self)
 export async function GET(
@@ -50,7 +50,7 @@ export async function GET(
     }
 
     // Check permissions
-    if (user.role !== Role.SUPER_ADMIN && user.id !== id) {
+    if (user.role !== 'SUPER_ADMIN' && user.id !== id) {
       return NextResponse.json(
         { error: 'Forbidden - You can only view your own profile' },
         { status: 403 }
@@ -105,7 +105,7 @@ export async function PUT(
     }
 
     // Check permissions
-    if (user.role !== Role.SUPER_ADMIN && user.id !== id) {
+    if (user.role !== 'SUPER_ADMIN' && user.id !== id) {
       return NextResponse.json(
         { error: 'Forbidden - You can only update your own profile' },
         { status: 403 }
@@ -113,7 +113,7 @@ export async function PUT(
     }
 
     // Regular users cannot update their role
-    if (user.role !== Role.SUPER_ADMIN && role) {
+    if (user.role !== 'SUPER_ADMIN' && role) {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can update role' },
         { status: 403 }
@@ -124,7 +124,7 @@ export async function PUT(
 
     if (name !== undefined) updateData.name = name;
     if (password) updateData.password = await hashPassword(password);
-    if (user.role === Role.SUPER_ADMIN && role) updateData.role = role;
+    if (user.role === 'SUPER_ADMIN' && role) updateData.role = role;
 
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -175,7 +175,7 @@ export async function DELETE(
       );
     }
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - Only super admin can delete users' },
         { status: 403 }

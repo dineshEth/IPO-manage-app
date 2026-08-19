@@ -1,7 +1,6 @@
 import { prisma } from './db';
 import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
-import { Role } from '@prisma/client';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_here';
 
@@ -9,7 +8,7 @@ export interface UserPayload {
   id: string;
   username: string;
   name: string | null;
-  role: Role;
+  role: string;
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -38,7 +37,8 @@ export async function generateToken(user: UserPayload): Promise<string> {
 export async function verifyToken(token: string): Promise<UserPayload | null> {
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
-    return payload as UserPayload;
+    const userPayload = payload as unknown as UserPayload;
+    return userPayload;
   } catch (error) {
     return null;
   }
