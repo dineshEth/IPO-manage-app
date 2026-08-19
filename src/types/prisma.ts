@@ -1,4 +1,4 @@
-// Type definitions for Prisma string-based enums (SQLite doesn't support native enums)
+// Type definitions for Prisma string-based enums
 
 // String literal types replacing the enums
 export type Role = 'SUPER_ADMIN' | 'USER';
