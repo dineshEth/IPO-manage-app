@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     });
 
     cookies().set('token', token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // 7 days
