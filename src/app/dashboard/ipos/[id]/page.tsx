@@ -75,9 +75,9 @@ export default function IPODetailPage() {
             startDate: new Date(data.ipo.startDate).toISOString().split('T')[0],
             endDate: new Date(data.ipo.endDate).toISOString().split('T')[0],
             rumorGMP: data.ipo.rumorGMP || '',
-            price: data.ipo.price,
-            lotSize: data.ipo.lotSize,
-            costInRupees: data.ipo.costInRupees,
+            price: data.ipo.price?.toString() || '',
+            lotSize: data.ipo.lotSize?.toString() || '',
+            costInRupees: data.ipo.costInRupees?.toString() || '',
             status: data.ipo.status,
             listingDate: data.ipo.listingDate ? new Date(data.ipo.listingDate).toISOString().split('T')[0] : '',
             allotmentDate: data.ipo.allotmentDate ? new Date(data.ipo.allotmentDate).toISOString().split('T')[0] : '',
@@ -95,6 +95,44 @@ export default function IPODetailPage() {
 
     fetchIPO();
   }, [id]);
+
+  // Auto-calculate cost in rupees when price or lotSize changes
+  useEffect(() => {
+    const price = parseFloat(formData.price) || 0;
+    const lotSize = parseFloat(formData.lotSize) || 0;
+    const calculatedCost = price * lotSize;
+    if (!isNaN(calculatedCost)) {
+      setFormData((prev) => ({
+        ...prev,
+        costInRupees: calculatedCost.toString(),
+      }));
+    }
+  }, [formData.price, formData.lotSize]);
+
+  // Auto-update status based on dates
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (formData.startDate && formData.endDate) {
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      let newStatus = 'PENDING';
+      if (today >= startDate && today <= endDate) {
+        newStatus = 'ACTIVE';
+      } else if (today > endDate) {
+        newStatus = 'CLOSED';
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        status: newStatus,
+      }));
+    }
+  }, [formData.startDate, formData.endDate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -316,6 +354,7 @@ export default function IPODetailPage() {
                   value={formData.status}
                   onChange={handleChange}
                   className="form-input"
+                  disabled
                 >
                   <option value="PENDING">Pending</option>
                   <option value="ACTIVE">Active</option>
@@ -384,6 +423,7 @@ export default function IPODetailPage() {
                   className="form-input"
                   step="0.01"
                   required
+                  disabled
                 />
               ) : (
                 <p className="text-gray-900">₹{ipo.costInRupees.toLocaleString()}</p>

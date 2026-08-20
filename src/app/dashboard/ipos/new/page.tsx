@@ -32,6 +32,44 @@ export default function NewIPOPage() {
     }
   }, [user, router]);
 
+  // Auto-calculate cost in rupees when price or lotSize changes
+  useEffect(() => {
+    const price = parseFloat(formData.price) || 0;
+    const lotSize = parseFloat(formData.lotSize) || 0;
+    const calculatedCost = price * lotSize;
+    if (!isNaN(calculatedCost)) {
+      setFormData((prev) => ({
+        ...prev,
+        costInRupees: calculatedCost.toString(),
+      }));
+    }
+  }, [formData.price, formData.lotSize]);
+
+  // Auto-update status based on dates
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (formData.startDate && formData.endDate) {
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      let newStatus = 'PENDING';
+      if (today >= startDate && today <= endDate) {
+        newStatus = 'ACTIVE';
+      } else if (today > endDate) {
+        newStatus = 'CLOSED';
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        status: newStatus,
+      }));
+    }
+  }, [formData.startDate, formData.endDate]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -174,6 +212,7 @@ export default function NewIPOPage() {
                 value={formData.status}
                 onChange={handleChange}
                 className="form-input"
+                disabled
               >
                 <option value="PENDING">Pending</option>
                 <option value="ACTIVE">Active</option>
@@ -235,6 +274,7 @@ export default function NewIPOPage() {
                 placeholder="e.g., 10000"
                 step="0.01"
                 required
+                disabled
               />
             </div>
 
