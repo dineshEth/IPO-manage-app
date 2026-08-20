@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { Role } from '@/types/prisma';
 import Link from 'next/link';
+import { authFetch } from '@/lib/fetch';
 
 interface Entry {
   id: string;
@@ -46,7 +47,7 @@ export default function AllEntriesPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/entries');
+        const response = await authFetch('/api/entries');
         const data = await response.json();
 
         if (response.ok) {
@@ -69,7 +70,7 @@ export default function AllEntriesPage() {
 
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
-      const response = await fetch(`/api/entries/${id}`, {
+      const response = await authFetch(`/api/entries/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +97,7 @@ export default function AllEntriesPage() {
 
   const handleAllotmentUpdate = async (id: string, allotmentStatus: string) => {
     try {
-      const response = await fetch(`/api/entries/${id}`, {
+      const response = await authFetch(`/api/entries/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ export default function AllEntriesPage() {
 
   const handleDeletionApproval = async (id: string, approve: boolean) => {
     try {
-      const response = await fetch(`/api/entries/${id}`, {
+      const response = await authFetch(`/api/entries/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

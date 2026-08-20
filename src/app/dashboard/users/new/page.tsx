@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { Role } from '@/types/prisma';
 import Link from 'next/link';
+import { authFetch } from '@/lib/fetch';
 
 export default function NewUserPage() {
   const { user } = useAuth();
@@ -39,7 +40,7 @@ export default function NewUserPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/users', {
+      const response = await authFetch('/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { Role } from '@/types/prisma';
+import { authFetch } from '@/lib/fetch';
 
 interface User {
   id: string;
@@ -35,7 +36,7 @@ export default function UsersPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/users');
+        const response = await authFetch('/api/users');
         const data = await response.json();
 
         if (response.ok) {
@@ -62,7 +63,7 @@ export default function UsersPage() {
     }
 
     try {
-      const response = await fetch(`/api/users/${id}`, {
+      const response = await authFetch(`/api/users/${id}`, {
         method: 'DELETE',
       });
 

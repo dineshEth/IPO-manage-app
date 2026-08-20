@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { Role } from '@/types/prisma';
+import { authFetch } from '@/lib/fetch';
 
 interface Entry {
   id: string;
@@ -41,12 +42,12 @@ export default function MyEntriesPage() {
         setError(null);
 
         // Fetch entries
-        const entriesResponse = await fetch('/api/entries');
+        const entriesResponse = await authFetch('/api/entries');
         const entriesData = await entriesResponse.json();
         setEntries(entriesData.entries || []);
 
         // Fetch IPOs for dropdown
-        const iposResponse = await fetch('/api/ipos');
+        const iposResponse = await authFetch('/api/ipos');
         const iposData = await iposResponse.json();
         setIpos(iposData.ipos || []);
       } catch (err) {
@@ -66,7 +67,7 @@ export default function MyEntriesPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/entries', {
+      const response = await authFetch('/api/entries', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ export default function MyEntriesPage() {
         setSelectedIPO('');
         setUpiId('');
         // Refresh entries
-        const refreshResponse = await fetch('/api/entries');
+        const refreshResponse = await authFetch('/api/entries');
         const refreshData = await refreshResponse.json();
         setEntries(refreshData.entries || []);
       }
@@ -104,7 +105,7 @@ export default function MyEntriesPage() {
     }
 
     try {
-      const response = await fetch(`/api/entries/${id}`, {
+      const response = await authFetch(`/api/entries/${id}`, {
         method: 'DELETE',
       });
 

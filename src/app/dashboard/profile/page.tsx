@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { Role } from '@/types/prisma';
+import { authFetch } from '@/lib/fetch';
 
 interface User {
   id: string;
@@ -46,7 +47,7 @@ export default function ProfilePage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/profile');
+        const response = await authFetch('/api/profile');
         const data = await response.json();
 
         if (response.ok) {
@@ -105,7 +106,7 @@ export default function ProfilePage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/profile', {
+      const response = await authFetch('/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +148,7 @@ export default function ProfilePage() {
     }
 
     try {
-      const response = await fetch('/api/profile', {
+      const response = await authFetch('/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

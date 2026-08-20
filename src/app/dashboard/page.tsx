@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { Role } from '@/types/prisma';
+import { authFetch } from '@/lib/fetch';
 
 interface IPO {
   id: string;
@@ -38,12 +39,12 @@ export default function DashboardPage() {
         setError(null);
 
         // Fetch IPOs
-        const iposResponse = await fetch('/api/ipos');
+        const iposResponse = await authFetch('/api/ipos');
         const iposData = await iposResponse.json();
         setIpos(iposData.ipos || []);
 
         // Fetch entries
-        const entriesResponse = await fetch('/api/entries');
+        const entriesResponse = await authFetch('/api/entries');
         const entriesData = await entriesResponse.json();
         setEntries(entriesData.entries || []);
       } catch (err) {

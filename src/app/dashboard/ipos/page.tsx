@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { Role } from '@/types/prisma';
+import { authFetch } from '@/lib/fetch';
 
 interface IPO {
   id: string;
@@ -39,7 +40,7 @@ export default function IPOsPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/ipos');
+        const response = await authFetch('/api/ipos');
         const data = await response.json();
 
         if (response.ok) {
@@ -64,7 +65,7 @@ export default function IPOsPage() {
     }
 
     try {
-      const response = await fetch(`/api/ipos/${id}`, {
+      const response = await authFetch(`/api/ipos/${id}`, {
         method: 'DELETE',
       });
 
