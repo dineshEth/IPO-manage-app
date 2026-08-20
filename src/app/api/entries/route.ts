@@ -7,7 +7,15 @@ import { Role, EntryStatus } from '@/types/prisma';
 // GET all entries for the current user (or all if super admin)
 export async function GET(request: NextRequest) {
   try {
-    const token = cookies().get('token')?.value;
+    let token = cookies().get('token')?.value;
+    
+    // Also check Authorization header
+    if (!token) {
+      const authHeader = request.headers.get('Authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
 
     if (!token) {
       return NextResponse.json(
@@ -84,7 +92,15 @@ export async function GET(request: NextRequest) {
 // POST new entry (users can create for themselves, super admin can create for anyone)
 export async function POST(request: NextRequest) {
   try {
-    const token = cookies().get('token')?.value;
+    let token = cookies().get('token')?.value;
+    
+    // Also check Authorization header
+    if (!token) {
+      const authHeader = request.headers.get('Authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
 
     if (!token) {
       return NextResponse.json(

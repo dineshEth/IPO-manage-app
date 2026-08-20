@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { Role } from '@/types/prisma';
 import Link from 'next/link';
+import { authFetch } from '@/lib/fetch';
 
 export default function NewIPOPage() {
   const { user } = useAuth();
@@ -84,7 +85,7 @@ export default function NewIPOPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/ipos', {
+      const response = await authFetch('/api/ipos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

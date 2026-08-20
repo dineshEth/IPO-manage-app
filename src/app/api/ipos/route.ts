@@ -5,8 +5,10 @@ import { getUserFromToken } from '@/lib/auth';
 import { Role } from '@/types/prisma';
 
 // GET all IPOs
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Optional: Add auth check if needed for GET requests
+    // For now, keeping it public as per existing behavior
     const ipos = await prisma.iPO.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
@@ -33,7 +35,15 @@ export async function GET() {
 // POST new IPO (Super Admin only)
 export async function POST(request: NextRequest) {
   try {
-    const token = cookies().get('token')?.value;
+    let token = cookies().get('token')?.value;
+    
+    // Also check Authorization header
+    if (!token) {
+      const authHeader = request.headers.get('Authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+      }
+    }
 
     if (!token) {
       return NextResponse.json(

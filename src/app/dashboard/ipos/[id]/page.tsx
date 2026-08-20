@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { Role } from '@/types/prisma';
 import Link from 'next/link';
+import { authFetch } from '@/lib/fetch';
 
 interface IPO {
   id: string;
@@ -64,7 +65,7 @@ export default function IPODetailPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/ipos/${id}`);
+        const response = await authFetch(`/api/ipos/${id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -171,7 +172,7 @@ export default function IPODetailPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/ipos/${id}`, {
+      const response = await authFetch(`/api/ipos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +203,7 @@ export default function IPODetailPage() {
     }
 
     try {
-      const response = await fetch(`/api/ipos/${id}`, {
+      const response = await authFetch(`/api/ipos/${id}`, {
         method: 'DELETE',
       });
 
