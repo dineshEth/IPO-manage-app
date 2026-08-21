@@ -3,16 +3,11 @@ import bcrypt from 'bcryptjs';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
-  dbInitialized: boolean | undefined;
+  dbInitPromise: Promise<void> | undefined;
 };
 
 // Initialize database with seed data if it doesn't exist
 async function initializeDatabase(): Promise<void> {
-  // Use a flag to prevent multiple initializations across module reloads
-  if (globalForPrisma.dbInitialized) {
-    return;
-  }
-
   try {
     const prismaInstance = globalForPrisma.prisma || new PrismaClient();
     
@@ -41,18 +36,19 @@ async function initializeDatabase(): Promise<void> {
   } catch (error) {
     console.error('[DB INIT] Error initializing database:', error);
     // Don't fail the application if initialization fails
-  } finally {
-    globalForPrisma.dbInitialized = true;
   }
 }
+
+// Create a singleton initialization promise
+export const dbInitPromise = globalForPrisma.dbInitPromise ?? initializeDatabase();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.dbInitPromise = dbInitPromise;
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-// Run initialization immediately when module is loaded
-// This ensures the database is checked and seeded on first request
-initializeDatabase().catch((e) => {
+// Ensure initialization runs immediately
+(dbInitPromise as Promise<void>).catch((e) => {
   console.error('[DB INIT] Initial database initialization failed:', e);
 });
 

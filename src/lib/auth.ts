@@ -1,4 +1,4 @@
-import { prisma } from './db';
+import { prisma, dbInitPromise } from './db';
 import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
 
@@ -48,6 +48,9 @@ export async function getUserFromToken(token: string): Promise<UserPayload | nul
   const payload = await verifyToken(token);
   if (!payload) return null;
 
+  // Wait for database initialization to complete
+  await dbInitPromise;
+
   const user = await prisma.user.findUnique({
     where: { id: payload.id },
     select: {
@@ -62,6 +65,9 @@ export async function getUserFromToken(token: string): Promise<UserPayload | nul
 }
 
 export async function authenticateUser(username: string, password: string): Promise<UserPayload | null> {
+  // Wait for database initialization to complete
+  await dbInitPromise;
+  
   const user = await prisma.user.findUnique({
     where: { username },
   });
